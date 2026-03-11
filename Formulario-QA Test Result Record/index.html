@@ -1,0 +1,115 @@
+<!--
+-->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Registro de Resultado de Prueba</title>
+<link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+
+<div class="card">
+    <h2>Registro de Resultado de Prueba</h2>
+
+    <div id="formMessage" class="form-message hidden"></div>
+
+    <form 
+        id="testForm"
+        method="POST"
+        action="http://10.108.10.137:5678/webhook/4e"
+        enctype="multipart/form-data">
+
+        <div class="form-group">
+            <label for="testcase">ID Prueba</label>
+            <input type="text" id="testcase" name="testcase" required>
+        </div>
+
+        <div class="form-group">
+            <label for="resultado">Resultado</label>
+            <select id="resultado" name="resultado" required>
+                <option value="" disabled selected>Seleccione</option>
+                <option value="Exitoso">Exitoso</option>
+                <option value="Fallido">Fallido</option>
+                <option value="No aplicable">No Aplicable</option>
+                <option value="Paused">Pendiente Gestión</option>
+                <option value="Bloqueado">Bloqueado</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="tester">Tester</label>
+            <input type="text" id="tester" name="tester" required>
+        </div>
+
+        <!-- Evidencia -->
+        <div class="form-group hidden" id="documentoGroup">
+            <label for="documento">Adjuntar Evidencia</label>
+            <input type="file" id="documento" name="documento" required>
+            <small id="fileHelp" class="file-help"></small>
+        </div>
+
+        <!-- Opciones Bug (solo Fallido) -->
+        <div class="form-group hidden" id="bugOptionsGroup">
+            <label>Gestión de Bug</label>
+
+            <div>
+                <input type="radio" id="bugExistenteRadio" name="bugMode" value="existente" checked>
+                <label for="bugExistenteRadio">Relacionar bug existente</label>
+            </div>
+
+            <div>
+                <input type="radio" id="bugNuevoRadio" name="bugMode" value="nuevo">
+                <label for="bugNuevoRadio">Crear nuevo bug</label>
+            </div>
+        </div>
+
+        <!-- Bug Existente -->
+        <div class="form-group hidden" id="bugExistenteGroup">
+            <label for="bugExistente">ID Bug</label>
+            <input type="text" id="bugExistente" name="bugExistente">
+        </div>
+
+        <!-- Bug Nuevo -->
+        <div class="form-group hidden" id="bugNuevoGroup">
+            <label for="bugTitulo">Título</label>
+            <input type="text" id="bugTitulo" name="bugTitulo">
+
+            <label for="bugComentario" style="margin-top:10px;">Comentario</label>
+            <textarea id="bugComentario" name="bugComentario" rows="3"></textarea>
+        </div>
+
+        <div class="form-group hidden" id="comentarioGroup">
+            <label for="comentario">Comentario</label>
+            <textarea id="comentario" name="comentario" rows="4"></textarea>
+        </div>
+
+        <div class="form-group hidden" id="impedimentoGroup">
+            <label for="impedimento">ID Impedimento</label>
+            <input type="text" id="impedimento" name="impedimento">
+        </div>
+
+        <button type="submit" id="submitBtn">
+            <span id="btnText">Registrar Resultado</span>
+            <span id="spinner" class="spinner hidden"></span>
+        </button>
+    </form>
+</div>
+
+<!-- Modal Confirmación -->
+<div id="confirmModal" class="modal hidden">
+    <div class="modal-content">
+        <h3>Confirmar envío</h3>
+        <div id="confirmSummary"></div>
+        <div class="modal-actions">
+            <button type="button" id="confirmSend">Confirmar</button>
+            <button type="button" id="cancelSend" class="secondary">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+<script src="js/form.js"></script>
+</body>
+</html>

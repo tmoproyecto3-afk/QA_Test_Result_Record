@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultado de Ejecución</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f5f5f5; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .card { background: #fff; padding: 40px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); width: 90%; max-width: 500px; text-align: center; }
+
+        .form-message { font-size: 18px; margin-top: 20px; font-weight: 500; }
+        .success { color: #2e7d32; }
+        .error { color: #d32f2f; }
+
+        .acciones-list { text-align: left; background: #f9f9f9; padding: 15px 15px 15px 40px; border-radius: 8px; border-left: 4px solid #007bff; margin-top: 20px; display: inline-block; width: 100%; box-sizing: border-box; }
+        .acciones-list li { margin-bottom: 8px; color: #555; font-size: 14px; }
+
+        button { padding: 12px 25px; margin-top: 30px; cursor: pointer; border: none; background-color: #007bff; color: #fff; border-radius: 6px; font-size: 16px; transition: background 0.3s; }
+        button:hover { background-color: #0056b3; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2 id="titulo">Resultado</h2>
+    <div id="resultMessage" class="form-message"></div>
+    <div id="listaContainer"></div>
+    <button onclick="window.location.href='index.html'">Volver al Inicio</button>
+</div>
+
+<script>
+    const params = new URLSearchParams(window.location.search);
+    const tipo = params.get("tipo") || "error";
+    const mensajeRaw = params.get("mensaje") || "";
+
+    const tituloEl = document.getElementById("titulo");
+    const messageBox = document.getElementById("resultMessage");
+    const listaContainer = document.getElementById("listaContainer");
+
+    // Configuración visual según tipo
+    let icono = "❌";
+    if (tipo === "exito") {
+        tituloEl.textContent = "¡Operación Exitosa!";
+        messageBox.className = "form-message success";
+        icono = "✅";
+    } else {
+        tituloEl.textContent = "Resultado de la ejecución";
+        messageBox.className = "form-message error";
+    }
+
+    // Procesar mensaje y lista de acciones separadas por "|"
+    if (mensajeRaw.includes('|')) {
+        const [mensajePrincipal, ...acciones] = mensajeRaw.split('|');
+        messageBox.textContent = `${icono} ${mensajePrincipal}`;
+
+        const htmlLista = acciones.filter(a => a.trim()).map(a => `<li>${a.trim()}</li>`).join('');
+        if (htmlLista) listaContainer.innerHTML = `<ul class="acciones-list">${htmlLista}</ul>`;
+    } else {
+        messageBox.textContent = `${icono} ${mensajeRaw}`;
+    }
+</script>
+
+</body>
+</html>
