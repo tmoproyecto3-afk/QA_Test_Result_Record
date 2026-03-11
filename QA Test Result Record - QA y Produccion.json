@@ -1,0 +1,1879 @@
+{
+  "name": "QA Test Result Record - QA y Produccion",
+  "nodes": [
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://dev.azure.com/OrgClaroColombia/SalesForce/_apis/test/points?api-version=7.1",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"pointsFilter\": {\n    \"testcaseIds\": [{{ $json.id }}]\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -688,
+        1056
+      ],
+      "id": "b41147e4-62cc-4d8e-b346-8b3d53039364",
+      "name": "Obtener TestPlan y TestSuite",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "yXUX6crYB0hVFVjS",
+          "name": "PAT Arley"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://dev.azure.com/OrgClaroColombia/SalesForce/_apis/test/Runs/{{ $('Crear Run').item.json.id }}/results?api-version=7.1",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "=[\n  {\n    \"testCaseRevision\": {{ $('Obtener Result').item.json.value[0].testCaseRevision }},\n    \"testCaseTitle\": \"{{ $('Obtener Titulo').item.json.fields['System.Title'] }}\",\n    \"testCasePriority\": {{ $('Obtener Titulo').item.json.fields['Microsoft.VSTS.Common.Priority'] }},\n    \"id\": {{ $('Obtener Result').item.json.value[0].id }},\n    \"state\": \"Completed\",\n    \"outcome\": \"{{ $('Convertir resultado').item.json.outcomeAzure }}\"\n  }\n]",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        160,
+        1056
+      ],
+      "id": "76827494-2e95-43b4-9df5-972fbba59248",
+      "name": "Cerrar Result",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "yXUX6crYB0hVFVjS",
+          "name": "PAT Arley"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://dev.azure.com/OrgClaroColombia/SalesForce/_apis/test/runs/{{ $('Crear Run').item.json.id }}?api-version=7.1",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"state\": \"Completed\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        336,
+        1056
+      ],
+      "id": "7682cc6d-02f2-4a68-9809-8c69563de6b2",
+      "name": "Cerrar Run",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "yXUX6crYB0hVFVjS",
+          "name": "PAT Arley"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://dev.azure.com/OrgClaroColombia/SalesForce/_apis/test/runs?api-version=7.1\n",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"name\": \"Ejecución automática Test {{ $('Recibir datos de ejecución').item.json.body.testcase }}\",\n  \"plan\": {\n    \"id\": {{ $('Obtener TestPlan y TestSuite').item.json.points[0].testPlan.id }}\n  },\n  \"pointIds\": [{{ $('Obtener TestPlan y TestSuite').item.json.points[0].id }}],\n  \"isAutomated\": false,\n  \"state\": \"InProgress\"\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -352,
+        1056
+      ],
+      "id": "ef606d1d-0eb2-46cd-9fcb-a731bec0a314",
+      "name": "Crear Run",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "yXUX6crYB0hVFVjS",
+          "name": "PAT Arley"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://dev.azure.com/OrgClaroColombia/SalesForce/_apis/test/Runs/{{ $json.id }}/results?api-version=7.0 ",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -176,
+        1056
+      ],
+      "id": "8b75a0a3-29bb-4d11-8feb-13929f23d0c0",
+      "name": "Obtener Result",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "yXUX6crYB0hVFVjS",
+          "name": "PAT Arley"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://dev.azure.com/OrgClaroColombia/SalesForce/_apis/test/Runs/{{ $('Crear Run').item.json.id }}/results?api-version=7.1",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "=[\n  {\n    \"id\": {{ $('Obtener Result').item.json.value[0].id }},\n    \"state\": \"InProgress\"\n  }\n]",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -16,
+        1056
+      ],
+      "id": "4826c2f5-4970-4a4c-be08-d7e2babf8130",
+      "name": "Actualizar Result",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "yXUX6crYB0hVFVjS",
+          "name": "PAT Arley"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://dev.azure.com/OrgClaroColombia/SalesForce/_apis/wit/workitems/{{ $('Recibir datos de ejecución').item.json.body.testcase }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -528,
+        1056
+      ],
+      "id": "241ac671-1ccb-4c6f-a12e-de97aedf048f",
+      "name": "Obtener Titulo",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "yXUX6crYB0hVFVjS",
+          "name": "PAT Arley"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "4e",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -2800,
+        880
+      ],
+      "id": "65a02aa8-cbd9-4a66-9906-de8d8ebda3a8",
+      "name": "Recibir datos de ejecución",
+      "webhookId": "b971ff56-2d48-42da-b3e5-f757fa5d674e"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Mapeo de valores del formulario → Azure DevOps API\nconst mapaResultados = {\n  'Exitoso':     'Passed',\n  'Fallido':     'Failed',\n  'Bloqueado':   'Blocked',\n  'No aplicable': 'NotApplicable',\n  'Paused': 'Paused'\n};\n\n// Obtener la fecha actual en formato ISO con milisegundos\nconst fechaActual = new Date();\nconst fechaFormateada = fechaActual.toISOString().slice(0, -1); // Remueve la 'Z' final\n// Formato: 2026-02-14T20:30:57.123\n\n// Obtener el valor del formulario\nconst resultadoFormulario = $('Recibir datos de ejecución').first().json.body.resultado;\n\n// Convertir al valor que necesita Azure DevOps\nconst outcomeAzure = mapaResultados[resultadoFormulario];\n\n// Validar que el valor existe en el mapa\nif (!outcomeAzure) {\n  throw new Error(`Resultado no reconocido: \"${resultadoFormulario}\". Valores válidos: ${Object.keys(mapaResultados).join(', ')}`);\n}\n\n// Determinar acción con los tags\nlet accionTag = 'ninguna';\nlet tagToAdd = null;\nlet debeQuitarTag = false;\n\nif (resultadoFormulario === 'Paused') {\n  // Si es Paused, agregar el tag\n  accionTag = 'agregar';\n  tagToAdd = 'PTMO';\n  debeQuitarTag = false;\n} else {\n  // Si es cualquier otro estado, quitar el tag\n  accionTag = 'quitar';\n  tagToAdd = null;\n  debeQuitarTag = true;\n}\n\nconsole.log(`Acción tag: ${accionTag}, Tag: ${tagToAdd}, Debe quitar: ${debeQuitarTag}`);\n\n\n// Pasar todos los datos \nreturn [{\n  json: {\n    ...$json,                      // Mantiene todos los campos del formulario\n    outcomeAzure: outcomeAzure,    // Agrega el outcome convertido\n    completedDate: fechaFormateada, // Agrega la fecha actual\n    accionTag: accionTag,\n    tagToAdd: tagToAdd,\n    debeQuitarTag: debeQuitarTag\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1216,
+        1072
+      ],
+      "id": "2ffa4327-0406-4db7-a1bf-f8e81ef6ab22",
+      "name": "Convertir resultado",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://dev.azure.com/OrgClaroColombia/SalesForce/_apis/wit/attachments?fileName={{ $('Recibir datos de ejecución').item.binary.documento.fileName }}&api-version=7.1-preview.3",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/octet-stream"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "binaryData",
+        "inputDataFieldName": "documento",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        864,
+        1072
+      ],
+      "id": "4544374b-9156-485d-ac37-532e93a17ade",
+      "name": "Cargar Documento",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "yXUX6crYB0hVFVjS",
+          "name": "PAT Arley"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://dev.azure.com/OrgClaroColombia/SalesForce/_apis/wit/workitems/{{ $('Recibir datos de ejecución').item.json.body.testcase }}?api-version=7.1-preview.3",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json-patch+json",
+        "body": "=[   {     \"op\": \"add\",     \"path\": \"/relations/-\",     \"value\": {       \"rel\": \"AttachedFile\",       \"url\": \"{{ $json.url }}\",       \"attributes\": {         \"comment\": \"Archivo adjunto por: {{ $('Recibir datos de ejecución').item.json.body.tester }} desde QA Test Result Record. \",         \"name\": \"{{ $('Recibir datos de ejecución').item.binary.documento.fileName }}\"       }     }   } ]",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1024,
+        1072
+      ],
+      "id": "6e629c91-e5e7-434e-bba5-4ee0f5db3c37",
+      "name": "Asociar Documento",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "yXUX6crYB0hVFVjS",
+          "name": "PAT Arley"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://dev.azure.com/OrgClaroColombia/SalesForce/_apis/wit/workitems/{{ $('Recibir datos de ejecución').item.json.body.testcase }}?api-version=7.1",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json-patch+json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "=[\n  {\n    \"op\": \"add\",\n    \"path\": \"/fields/System.Tags\",\n    \"value\": \"{{ $json.tagToAdd }}\"\n  }\n] ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -864,
+        1056
+      ],
+      "id": "5d2b2199-cc27-45e8-8ec1-8b809995457f",
+      "name": "Agregar TAG",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "yXUX6crYB0hVFVjS",
+          "name": "PAT Arley"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://dev.azure.com/OrgClaroColombia/SalesForce/_apis/wit/workitems/{{ $('Recibir datos de ejecución').item.json.body.testcase }}?api-version=7.1",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json-patch+json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "=[\n  {\n    \"op\": \"replace\",\n    \"path\": \"/fields/System.Tags\",\n    \"value\": \"{{ $json.tagToAdd }}\"\n  }\n] ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -864,
+        1216
+      ],
+      "id": "5ecbf354-7750-491e-820d-8b3a56e5850d",
+      "name": "Quitar TAG",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "yXUX6crYB0hVFVjS",
+          "name": "PAT Arley"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "d34d9c3e-1eeb-4ab1-b893-8e22454c1e2a",
+                    "leftValue": "={{ $('Recibir datos de ejecución').item.json.body.resultado }}",
+                    "rightValue": "Bloqueado",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Bloqueado"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "b49ebba6-1e15-4d74-ba5c-23972616226f",
+                    "leftValue": "={{ $('Recibir datos de ejecución').item.json.body.resultado }}",
+                    "rightValue": "Fallido",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Fallido"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "9a66d926-960c-491d-9d21-221b6afe086d",
+                    "leftValue": "={{ $('Recibir datos de ejecución').item.json.body.resultado }}",
+                    "rightValue": "Exitoso",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Exitoso"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "1e219d8e-9b0c-41bb-b89d-a4535eada8fb",
+                    "leftValue": "={{ $('Recibir datos de ejecución').item.json.body.resultado }}",
+                    "rightValue": "No aplicable",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "No aplicable"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Recibir datos de ejecución').item.json.body.resultado }}",
+                    "rightValue": "Paused",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "a9c0e5c7-cb7f-4a17-9347-28d65c2c16f8"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Pausado"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -2080,
+        1008
+      ],
+      "id": "434f039a-c3b8-4e64-831c-8df6d50d3fc2",
+      "name": "Switch1"
+    },
+    {
+      "parameters": {
+        "url": "=https://dev.azure.com/OrgClaroColombia/SalesForce/_apis/wit/workitems/{{ $('Recibir datos de ejecución').item.json.body.impedimento[0] }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -1840,
+        304
+      ],
+      "id": "63cf6fec-ffe1-4692-b330-f2d10e4e06af",
+      "name": "Obtener impedimento",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "yXUX6crYB0hVFVjS",
+          "name": "PAT Arley"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "url": "=https://dev.azure.com/OrgClaroColombia/SalesForce/_apis/wit/workitems/{{ $('Recibir datos de ejecución').item.json.body.bugExistente }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -1712,
+        512
+      ],
+      "id": "62fbc0a2-5c37-46aa-b376-628aa67e1f29",
+      "name": "Obtener Bug",
+      "alwaysOutputData": true,
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "yXUX6crYB0hVFVjS",
+          "name": "PAT Arley"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://dev.azure.com/OrgClaroColombia/SalesForce/_apis/wit/workitems/{{ $('Recibir datos de ejecución').item.json.body.testcase }}?api-version=7.1",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json-patch+json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "=[\n  {\n    \"op\": \"add\",\n    \"path\": \"/relations/-\",\n    \"value\": {\n      \"rel\": \"System.LinkTypes.Related\",\n      \"url\": \"https://dev.azure.com/OrgClaroColombia/_apis/wit/workItems/{{ $('Recibir datos de ejecución').item.json.body.impedimento[0] }}\"\n    }\n  }\n] ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -1120,
+        304
+      ],
+      "id": "942b0349-3e96-40af-8407-b059bcf6239d",
+      "name": "Relacionar Impedimento",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "yXUX6crYB0hVFVjS",
+          "name": "PAT Arley"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://dev.azure.com/OrgClaroColombia/SalesForce/_apis/wit/workitems/{{ $('Recibir datos de ejecución').item.json.body.testcase }}?api-version=7.1",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json-patch+json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "=[\n  {\n    \"op\": \"add\",\n    \"path\": \"/relations/-\",\n    \"value\": {\n      \"rel\": \"System.LinkTypes.Related\",\n      \"url\": \"https://dev.azure.com/OrgClaroColombia/_apis/wit/workItems/{{ $('Recibir datos de ejecución').item.json.body.bugExistente }}\"\n    }\n  }\n] ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -1232,
+        544
+      ],
+      "id": "2844dc6d-233e-4c8d-aeef-1bf2f8237d6e",
+      "name": "Relacionar Bug",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "yXUX6crYB0hVFVjS",
+          "name": "PAT Arley"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "148d27be-a90c-4ecf-a6b2-4520aab8ed64",
+              "leftValue": "={{ $('Recibir datos de ejecución').item.json.body.resultado }}",
+              "rightValue": "Paused",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "35c31c3e-1020-4b9c-b017-3e87d9919ac9",
+              "leftValue": "={{ $('Recibir datos de ejecución').item.json.body.resultado }}",
+              "rightValue": "Bloqueado",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        496,
+        1056
+      ],
+      "id": "61f38637-5990-4693-849d-edfbba89ff46",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Recuperar el binario del nodo trigger (donde está el archivo)\nconst binaryData = $('Recibir datos de ejecución').item.binary;\n\n// Verificar que existe el archivo\nif (!binaryData || !binaryData.documento) {\n  throw new Error('No se encontró el archivo de evidencia en el formulario');\n}\n\n// Retornar el item actual pero con el binario adjunto\nreturn [{\n  json: $json,         // Mantiene los datos JSON del nodo anterior\n  binary: {\n    documento: binaryData.documento  // Inyecta el binario con el nombre 'documento'\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        704,
+        1072
+      ],
+      "id": "3eed1a8e-6b5a-41ad-ad17-674befb69c1c",
+      "name": "Recuperar Binario"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "4c127f59-3257-45a0-9e4b-45cedec9645e",
+              "leftValue": "={{ $json.accionTag }}",
+              "rightValue": "agregar",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -1040,
+        1072
+      ],
+      "id": "07ad5ee1-7849-4ef7-8d00-19d4cb68928b",
+      "name": "If3"
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://dev.azure.com/OrgClaroColombia/SalesForce/_apis/wit/workitems/{{ $('Recibir datos de ejecución').item.json.body.testcase }}?api-version=7.0",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json-patch+json"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "=[\n  {\n    \"op\": \"add\",\n    \"path\": \"/fields/System.History\",\n    \"value\": \"{{ $('Recibir datos de ejecución').item.json.body.comentario }}.\"\n  }\n]",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -1728,
+        960
+      ],
+      "id": "793f285b-21f5-4bdf-a293-9f20ff67e655",
+      "name": "Guardar comentario",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "yXUX6crYB0hVFVjS",
+          "name": "PAT Arley"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://dev.azure.com/OrgClaroColombia/SalesForce/_apis/wit/workitems/{{ $('Obtener Bug').item.json.id }}?api-version=7.1",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json-patch+json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "=[\n  {\n    \"op\": \"add\",\n    \"path\": \"/fields/Custom.BugSF_SubEstado\",\n    \"value\": \"Reapertura\"\n  },\n  {\n    \"op\": \"add\",\n    \"path\": \"/fields/System.State\",\n    \"value\": \"New\"\n  },\n  {\n    \"op\": \"add\",\n    \"path\": \"/fields/System.AssignedTo\",\n    \"value\": \"Gina Katherine Torres Vega\"\n  }\n] ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -832,
+        400
+      ],
+      "id": "400cb547-968b-4ee5-9731-8ba2dc62f624",
+      "name": "Reapertura Bug",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "yXUX6crYB0hVFVjS",
+          "name": "PAT Arley"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "a7dc61ac-1cfd-4939-85fb-04c416e9afcb",
+              "leftValue": "={{ $('Obtener Bug').item.json.fields['Custom.BugSF_SubEstado'] }}",
+              "rightValue": "Verificado",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "d3681769-409e-4654-9789-5e0c1d3ad3b2",
+              "leftValue": "={{ $('Obtener Bug').item.json.fields['Custom.BugSF_SubEstado'] }}",
+              "rightValue": "Desplegado",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -1056,
+        544
+      ],
+      "id": "e4564d42-2fcf-410c-bc70-6c75774ca84c",
+      "name": "SubEstado Reapertura"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "963065f7-c4e0-4a96-9019-d212113448ae",
+              "leftValue": "={{ $('Obtener Bug').item.json.fields['Custom.BugSF_SubEstado'] }}",
+              "rightValue": "Cancelado",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "200ce39b-f56d-4a79-90cc-5288b4598125",
+              "leftValue": "={{ $('Obtener Bug').item.json.fields['Custom.BugSF_SubEstado'] }}",
+              "rightValue": "Duplicado",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "e18b8081-92fb-4d1b-b8d7-b65cfb339724",
+              "leftValue": "={{ $('Obtener Bug').item.json.fields['Custom.BugSF_SubEstado'] }}",
+              "rightValue": "Fuera del alcance",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "57195229-1fd3-469e-a099-55e17746c693",
+              "leftValue": "={{ $('Obtener Bug').item.json.fields['Custom.BugSF_SubEstado'] }}",
+              "rightValue": "No es error",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "993bcd17-ad95-4fda-accb-3d8fc3b41862",
+              "leftValue": "={{ $('Obtener Bug').item.json.fields['Custom.BugSF_SubEstado'] }}",
+              "rightValue": "Paso Nueva versión",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "883f793d-78eb-40be-a8ba-95a332a354ff",
+              "leftValue": "={{ $('Obtener Bug').item.json.fields['Custom.BugSF_SubEstado'] }}",
+              "rightValue": "Solucionado",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "6f6a5880-cc10-44d9-966d-07ffb78ec5be",
+              "leftValue": "={{ $('Obtener Bug').item.json.fields['Custom.BugSF_SubEstado'] }}",
+              "rightValue": "Limitación de Producto",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "1c3ff763-86bf-4e9d-842b-4efd1fc55057",
+              "leftValue": "={{ $('Obtener Bug').item.json.fields['System.WorkItemType'] }}",
+              "rightValue": "Bug",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -1408,
+        528
+      ],
+      "id": "eb549312-7927-4f81-bf56-91e791f79fe0",
+      "name": "SubEstados Cerrados"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://dev.azure.com/OrgClaroColombia/SalesForce/_apis/wit/workitems/$Bug?api-version=7.1",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json-patch+json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "=[\n  {\n    \"op\": \"add\",\n    \"path\": \"/fields/System.Title\",\n    \"value\": \"{{ $('Recibir datos de ejecución').item.json.body.bugTitulo }}\"\n  },\n\n {\n    \"op\": \"add\",\n    \"path\": \"/fields/System.AssignedTo\",\n    \"value\": \"Gina Katherine Torres Vega\"\n  },\n\n  {\n    \"op\": \"add\",\n    \"path\": \"/fields/System.State\",\n    \"value\": \"New\"\n  },\n\n    {\n    \"op\": \"add\",\n    \"path\": \"/fields/Custom.BugSF_SubEstado\",\n    \"value\": \"Por analizar\"\n  },\n\n  {\n    \"op\": \"add\",\n    \"path\": \"/relations/-\",\n    \"value\": {\n      \"rel\": \"Microsoft.VSTS.Common.TestedBy-Reverse\",\n      \"url\": \"https://dev.azure.com/OrgClaroColombia/_apis/wit/workItems/{{ $('Recibir datos de ejecución').item.json.body.testcase }}\"\n    }\n  }\n]",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -1712,
+        704
+      ],
+      "id": "1bef2c1d-8a75-4ff6-80b8-77bf84273e3b",
+      "name": "Crear Bug",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "yXUX6crYB0hVFVjS",
+          "name": "PAT Arley"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "16142bb4-20f1-4975-9364-bf825ff236e8",
+              "leftValue": "={{ $json.error.code }}",
+              "rightValue": "ERR_BAD_REQUEST",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -1600,
+        304
+      ],
+      "id": "be1a9677-2c8a-4914-af28-31ee8967eb0c",
+      "name": "Validacion existencia impedimento"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "16142bb4-20f1-4975-9364-bf825ff236e8",
+              "leftValue": "={{ $json.error.code }}",
+              "rightValue": "ERR_BAD_REQUEST",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "a5cc5201-3956-4036-9b06-fabc96b1045a",
+              "leftValue": "={{ $json.error.code }}",
+              "rightValue": "ERR_BAD_REQUEST",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -1568,
+        512
+      ],
+      "id": "b8d8f839-9855-4c96-8572-17da0bac1a78",
+      "name": "Validación existencia Bug"
+    },
+    {
+      "parameters": {
+        "content": "## Se accede por medio de \n## http://10.108.10.137/azure-app/\n## http://10.108.10.137/azure-app-qa/\n",
+        "height": 144,
+        "width": 432
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -2992,
+        688
+      ],
+      "typeVersion": 1,
+      "id": "90baea30-7d47-46ea-be40-34cf05238182",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1. Inicializamos variables básicas\n\nlet acciones = [];\nlet statusFinal = \"exito\"; \nlet mensajeFinal = \"Se completo el proceso correctamente\";\n \n// 2. Función segura para obtener datos\n\nconst obtenerDatosSeguro = (nombre) => {\n    try {\n        const resultado = $(nombre).first();\n        return resultado ? resultado.json : null;\n    } catch (e) {\n        return null;\n    }\n};\n \n// 3. Extraemos los valores de entrada (Webhook) usando la ruta exacta\n\nconst inputData = obtenerDatosSeguro('Recibir datos de ejecución')?.body || {};\n\nconst idBug = inputData.bugExistente || \"N/A\";\nconst idImp = inputData.impedimento || \"N/A\";\nconst idTestCase = inputData.testcase || \"N/A\";\nconst valorResultado = inputData.resultado || \"procesado\";\n\nconst namebugnuevo = inputData.bugTitulo || \"N/A\";\n\n\n// <--- Aquí extraemos tu variable\nconst idBugNuevo = obtenerDatosSeguro('Crear Bug') || {};\nconst idbugNuevo2 =  idBugNuevo.id || \"N/A\";\n\nconst nameBug = obtenerDatosSeguro('Obtener Bug')?.fields || {};\nconst nameBugexistente = nameBug['System.Title'];\n\nconst idImpRel = obtenerDatosSeguro('Obtener impedimento')?.fields || {};\nconst idImpRel2 = idImpRel['System.Title'];\n\n// --- 4. VALIDACIÓN DE ERRORES (Prioridad) ---\n \nif (obtenerDatosSeguro('Validacion existencia impedimento')?.error?.code === 'ERR_BAD_REQUEST') {\n    return { \n        tipo: \"error\", \n        mensaje: `El impedimento ${idImp} no existe. No se registró la ejecución.`, \n        acciones: \"\" \n    };\n}\n\nif (obtenerDatosSeguro('Validacion existencia TestCase')?.error?.code === 'ERR_BAD_REQUEST') {\n    return { \n        tipo: \"error\", \n        mensaje: `El TestCase ${idTestCase} no existe. No se registró la ejecución.`, \n        acciones: \"\" \n    };\n}\n \nif (obtenerDatosSeguro('Obtener Bug')?.error?.code === 'ERR_BAD_REQUEST') {\n    return { \n        tipo: \"error\", \n        mensaje: `El bug ${idBug} no existe. No se registró la ejecución.`, \n        acciones: \"\" \n    };\n}\n\n\nif (obtenerDatosSeguro('SubEstados Cerrados')) {\n    return { \n        tipo: \"error\", \n        mensaje: `El ID ${idBug} no es un Bug o este se encuentra cerrado. No se registró la ejecución. `, \n        acciones: \"\" \n    };\n}\n \nif (obtenerDatosSeguro('Validación Impedimento')) {\n  return { \n        tipo: \"error\", \n        mensaje: `El ID ${idImp} no es un Impedimento o este se encuentra cerrado. No se registró la ejecución.`, \n        acciones: \"\" \n    };\n}\n\nif (obtenerDatosSeguro('Validación TestCase')) {\n  return { \n        tipo: \"error\", \n        mensaje: `El ID ${idTestCase} no es un Test Case. No se registró la ejecución. `, \n        acciones: \"\" \n    };\n}\n\n\n\n// --- 5. VALIDACIÓN DE ACCIONES (Acumulativo) ---\n \nif (obtenerDatosSeguro('Crear Bug')) {\n    acciones.push(`Se creó el bug ${idbugNuevo2}: ${namebugnuevo} en el sistema.`);\n}\n \nif (obtenerDatosSeguro('Relacionar Impedimento')) {\n    acciones.push(`Se relacionó el impedimento ${idImp}: ${idImpRel2}.`);\n    acciones.push(`Se registró el resultado de la ejecución (${valorResultado}).`);\n}\n \nif (obtenerDatosSeguro('SubEstado Reapertura')) {\n    acciones.push(`Se relacionó el bug ${idBug}: ${nameBugexistente}.`);\n}\n \nif (obtenerDatosSeguro('Reapertura Bug')) {\n    acciones.push(`Se reaperturó el bug ${idBug}.`);\n}\n \n// Acción: Registro ejecución (Usa la variable dinámica valorResultado)\n\nif (obtenerDatosSeguro('flujo exitoso bloq paused')) {\n    acciones.push(`Se registró el resultado de la ejecución (${valorResultado}).`);\n}\n \n// Acción: Asociar Documento (También usa valorResultado)\n\nif (obtenerDatosSeguro('Asociar Documento'))  {\n    acciones.push(\"Se asoció la evidencia.\");\n    acciones.push(`Se registró el resultado de la ejecución (${valorResultado}).`);\n\n}\n \nif (obtenerDatosSeguro('Comentario de registro') || obtenerDatosSeguro('Guardar comentario')) {\n    acciones.push(\"Se registró el comentario.\");\n    acciones.push(`Se registró el resultado de la ejecución (${valorResultado}).`);\n}\n \n// --- 6. LIMPIEZA Y SALIDA FINAL ---\n \n// El Set asegura que si se registró el resultado por dos nodos distintos, solo aparezca una vez\n\nconst accionesUnicas = [...new Set(acciones)];\n \nif (statusFinal === \"exito\" && accionesUnicas.length === 0) {\n    mensajeFinal = \"No se realizaron cambios en los sistemas.\";\n}\n \nreturn {\n\n    tipo: statusFinal,\n    mensaje: mensajeFinal,\n    acciones: accionesUnicas.join('|') \n\n};\n "
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1472,
+        352
+      ],
+      "id": "372bfce7-d044-402d-9363-c998f6a702d3",
+      "name": "Generar respuesta"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "356e061f-9c3c-472a-abd8-98ab8773630d",
+              "leftValue": "={{ $('Recibir datos de ejecución').item.json.body.bugTitulo }}",
+              "rightValue": "\"\"",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -1856,
+        528
+      ],
+      "id": "298e1cd6-aa99-4b28-81ac-89b4ead67768",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "4ce1398d-c0da-4ae5-8cf3-bb6d392a3b27",
+              "leftValue": "={{ $('Obtener impedimento').item.json.fields['System.WorkItemType'] }}",
+              "rightValue": "Impediment",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "1720a324-e38d-44d5-afa0-23ef9dc025bb",
+              "leftValue": "={{ $('Obtener impedimento').item.json.fields['System.State'] }}",
+              "rightValue": "Open",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -1376,
+        320
+      ],
+      "id": "4a7225da-be2c-48fa-9562-fc7f8163b28e",
+      "name": "Validación Impedimento"
+    },
+    {
+      "parameters": {
+        "url": "=https://dev.azure.com/OrgClaroColombia/SalesForce/_apis/wit/workitems/{{ $json.body.testcase }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -2608,
+        880
+      ],
+      "id": "e225e315-35df-4ccf-8914-934678299a38",
+      "name": "Obtener TestCase",
+      "alwaysOutputData": true,
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "yXUX6crYB0hVFVjS",
+          "name": "PAT Arley"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "d32eaa2a-5bfc-450c-85af-f6a04150db81",
+              "leftValue": "={{ $('Obtener TestCase').item.json.fields['System.WorkItemType'] }}",
+              "rightValue": "Test Case",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -2240,
+        1072
+      ],
+      "id": "cae3667c-b819-427b-b94f-d81fa4969c57",
+      "name": "Validación TestCase"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "f1f04d7c-60b0-4ee4-b5f0-1231b5536166",
+              "leftValue": "={{ $json.error.code }}",
+              "rightValue": "=ERR_BAD_REQUEST",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -2416,
+        880
+      ],
+      "id": "3b9f44c6-16c0-4b4a-95ea-f20c6be7955a",
+      "name": "Validacion existencia TestCase"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Recuperar el binario del nodo trigger (donde está el archivo)\nconst binaryData = $('Recibir datos de ejecución').item.binary;\n\n// Verificar que existe el archivo\nif (!binaryData || !binaryData.documento) {\n  throw new Error('No se encontró el archivo de evidencia en el formulario');\n}\n\n// Retornar el item actual pero con el binario adjunto\nreturn [{\n  json: $json,         // Mantiene los datos JSON del nodo anterior\n  binary: {\n    documento: binaryData.documento  // Inyecta el binario con el nombre 'documento'\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        368,
+        704
+      ],
+      "id": "8cd0f276-97e7-4d2d-8970-f79b88085268",
+      "name": "Recuperar Binario Bug"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://dev.azure.com/OrgClaroColombia/SalesForce/_apis/wit/attachments?fileName={{ $('Recibir datos de ejecución').item.binary.documento.fileName }}&api-version=7.1-preview.3",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/octet-stream"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "binaryData",
+        "inputDataFieldName": "documento",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        576,
+        704
+      ],
+      "id": "f798adde-c7bf-452e-9aa3-ecc7343d67d1",
+      "name": "Cargar Documento Bug",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "yXUX6crYB0hVFVjS",
+          "name": "PAT Arley"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://dev.azure.com/OrgClaroColombia/SalesForce/_apis/wit/workitems/{{ $('Crear Bug').item.json.id }}?api-version=7.1-preview.3",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json-patch+json",
+        "body": "=[   {     \"op\": \"add\",     \"path\": \"/relations/-\",     \"value\": {       \"rel\": \"AttachedFile\",       \"url\": \"{{ $json.url }}\",       \"attributes\": {         \"comment\": \"Archivo adjunto por: {{ $('Recibir datos de ejecución').item.json.body.tester }} desde QA Test Result Record. \",         \"name\": \"{{ $('Recibir datos de ejecución').item.binary.documento.fileName }}\"       }     }   } ]",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        768,
+        704
+      ],
+      "id": "dc05e008-e331-4903-9577-d7f004eb1217",
+      "name": "Asociar Documento Bug",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "yXUX6crYB0hVFVjS",
+          "name": "PAT Arley"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://dev.azure.com/OrgClaroColombia/SalesForce/_apis/wit/workitems/{{ $json.id }}?api-version=7.0",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json-patch+json"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "=[\n  {\n    \"op\": \"add\",\n    \"path\": \"/fields/System.History\",\n    \"value\":\"{{ $('Recibir datos de ejecución').item.json.body.bugComentario }}.\"\n  }\n]",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -1504,
+        704
+      ],
+      "id": "14889ccd-adb5-4914-868a-6e95422ef2c2",
+      "name": "Comentario Bug",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "yXUX6crYB0hVFVjS",
+          "name": "PAT Arley"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Obtener TestPlan y TestSuite": {
+      "main": [
+        [
+          {
+            "node": "Obtener Titulo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cerrar Result": {
+      "main": [
+        [
+          {
+            "node": "Cerrar Run",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cerrar Run": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Crear Run": {
+      "main": [
+        [
+          {
+            "node": "Obtener Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Obtener Result": {
+      "main": [
+        [
+          {
+            "node": "Actualizar Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Actualizar Result": {
+      "main": [
+        [
+          {
+            "node": "Cerrar Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Obtener Titulo": {
+      "main": [
+        [
+          {
+            "node": "Crear Run",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recibir datos de ejecución": {
+      "main": [
+        [
+          {
+            "node": "Obtener TestCase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convertir resultado": {
+      "main": [
+        [
+          {
+            "node": "If3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cargar Documento": {
+      "main": [
+        [
+          {
+            "node": "Asociar Documento",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agregar TAG": {
+      "main": [
+        [
+          {
+            "node": "Obtener TestPlan y TestSuite",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Quitar TAG": {
+      "main": [
+        [
+          {
+            "node": "Obtener TestPlan y TestSuite",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch1": {
+      "main": [
+        [
+          {
+            "node": "Obtener impedimento",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Convertir resultado",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Convertir resultado",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Guardar comentario",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Convertir resultado",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Guardar comentario",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Obtener impedimento": {
+      "main": [
+        [
+          {
+            "node": "Validacion existencia impedimento",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Obtener Bug": {
+      "main": [
+        [
+          {
+            "node": "Validación existencia Bug",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recuperar Binario": {
+      "main": [
+        [
+          {
+            "node": "Cargar Documento",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Generar respuesta",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Recuperar Binario",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If3": {
+      "main": [
+        [
+          {
+            "node": "Agregar TAG",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Quitar TAG",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guardar comentario": {
+      "main": [
+        [
+          {
+            "node": "Generar respuesta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Relacionar Bug": {
+      "main": [
+        [
+          {
+            "node": "SubEstado Reapertura",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SubEstado Reapertura": {
+      "main": [
+        [
+          {
+            "node": "Reapertura Bug",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Generar respuesta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SubEstados Cerrados": {
+      "main": [
+        [
+          {
+            "node": "Generar respuesta",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Relacionar Bug",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Convertir resultado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reapertura Bug": {
+      "main": [
+        [
+          {
+            "node": "Generar respuesta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Crear Bug": {
+      "main": [
+        [
+          {
+            "node": "Comentario Bug",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Convertir resultado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Asociar Documento": {
+      "main": [
+        [
+          {
+            "node": "Generar respuesta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validacion existencia impedimento": {
+      "main": [
+        [
+          {
+            "node": "Generar respuesta",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Validación Impedimento",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validación existencia Bug": {
+      "main": [
+        [
+          {
+            "node": "Generar respuesta",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "SubEstados Cerrados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Relacionar Impedimento": {
+      "main": [
+        [
+          {
+            "node": "Generar respuesta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Obtener Bug",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Crear Bug",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validación Impedimento": {
+      "main": [
+        [
+          {
+            "node": "Relacionar Impedimento",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Convertir resultado",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Generar respuesta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Obtener TestCase": {
+      "main": [
+        [
+          {
+            "node": "Validacion existencia TestCase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validación TestCase": {
+      "main": [
+        [
+          {
+            "node": "Switch1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Generar respuesta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validacion existencia TestCase": {
+      "main": [
+        [
+          {
+            "node": "Generar respuesta",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Validación TestCase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recuperar Binario Bug": {
+      "main": [
+        [
+          {
+            "node": "Cargar Documento Bug",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cargar Documento Bug": {
+      "main": [
+        [
+          {
+            "node": "Asociar Documento Bug",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Comentario Bug": {
+      "main": [
+        [
+          {
+            "node": "Recuperar Binario Bug",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Asociar Documento Bug": {
+      "main": [
+        [
+          {
+            "node": "Generar respuesta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "35ab2d87-4a55-4820-bdab-bd78f1b439e7",
+  "meta": {
+    "instanceId": "25aba39a55a4ee25cf520e3764d61591537e6c6755a7b53ea4adbaeb2ab2ac7a"
+  },
+  "id": "GDmd2h71OYVdOXGT",
+  "tags": []
+}
